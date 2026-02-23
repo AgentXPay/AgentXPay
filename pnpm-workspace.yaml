@@ -1,0 +1,6 @@
+packages:
+  - "sdk"
+  - "middleware"
+  - "indexer"
+  - "frontend"
+  - "demo"
