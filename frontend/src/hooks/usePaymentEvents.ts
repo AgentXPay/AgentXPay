@@ -14,8 +14,9 @@ export interface PaymentEvent {
   eventType: "payment" | "subscription";
 }
 
-const INDEXER_API_URL =
-  process.env.NEXT_PUBLIC_INDEXER_API_URL || "http://localhost:3002";
+// Use Next.js rewrites proxy to avoid CORS issues
+// Requests to /api/indexer/* are proxied to the actual indexer URL via next.config.mjs
+const INDEXER_API_BASE = "/api/indexer";
 
 interface ApiEventRow {
   event_type: "payment" | "subscription";
@@ -64,7 +65,7 @@ export function usePaymentEvents(userAddress: `0x${string}` | undefined) {
     const fetchEvents = async () => {
       setIsLoading(true);
       try {
-        const url = `${INDEXER_API_URL}/api/events?address=${userAddress}&limit=500`;
+        const url = `${INDEXER_API_BASE}/events?address=${userAddress}&limit=500`;
         const response = await fetch(url, { signal: controller.signal });
 
         if (!response.ok) {
