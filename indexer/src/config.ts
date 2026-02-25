@@ -10,11 +10,11 @@ export const config = {
 
   paymentManagerAddress:
     process.env.PAYMENT_MANAGER_ADDRESS ||
-    "0x3949c97925e5Aa13e34ddb18EAbf0B70ABB0C7d4",
+    "0xf4AE7E15B1012edceD8103510eeB560a9343AFd3",
 
   subscriptionManagerAddress:
     process.env.SUBSCRIPTION_MANAGER_ADDRESS ||
-    "0x9e7F7d0E8b8F38e3CF2b3F7dd362ba2e9E82baa4",
+    "0x0bF7dE8d71820840063D4B8653Fd3F0618986faF",
 
   startBlock: BigInt(process.env.START_BLOCK || "0"),
 
