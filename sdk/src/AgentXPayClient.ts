@@ -79,7 +79,9 @@ export class AgentXPayClient {
   }
 
   /**
-   * x402-aware fetch: automatically handles HTTP 402 Payment Required responses
+   * x402-aware fetch: automatically handles HTTP 402 Payment Required responses.
+   * If options.serviceId is provided (from on-chain discoverServices), it overrides the provider's 402 serviceId.
+   * If options.pricePerCall is provided, it validates against the 402 response amount — mismatch throws an error.
    */
   async fetch(url: string, options?: X402FetchOptions): Promise<Response> {
     const autoPayment = options?.autoPayment ?? true;
@@ -92,8 +94,24 @@ export class AgentXPayClient {
         const paymentInfo = this._parsePaymentHeaders(response);
         if (!paymentInfo) throw new Error("Invalid 402 response: missing payment headers");
 
+        // Use on-chain serviceId if provided, otherwise fall back to 402 header
+        const effectiveServiceId = options?.serviceId || paymentInfo.serviceId;
+
+        // Validate price consistency if on-chain pricePerCall is provided
+        if (options?.pricePerCall) {
+          const onChainPrice = BigInt(options.pricePerCall);
+          const providerPrice = BigInt(paymentInfo.amount);
+          if (providerPrice !== onChainPrice) {
+            throw new Error(
+              `Price mismatch: provider requires ${paymentInfo.amount} wei, ` +
+              `but on-chain pricePerCall is ${options.pricePerCall} wei. ` +
+              `Please contact the service provider to fix the pricing configuration.`
+            );
+          }
+        }
+
         const result = await this.payments.payPerUse(
-          BigInt(paymentInfo.serviceId),
+          BigInt(effectiveServiceId),
           BigInt(paymentInfo.amount)
         );
 

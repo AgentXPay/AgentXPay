@@ -90,4 +90,8 @@ export interface X402PaymentInfo {
 export interface X402FetchOptions extends RequestInit {
   autoPayment?: boolean;
   maxRetries?: number;
+  /** On-chain service ID (from discoverServices). If provided, overrides the serviceId in the 402 response header. */
+  serviceId?: string;
+  /** On-chain pricePerCall in wei (from discoverServices). If provided, validates against the 402 response amount. */
+  pricePerCall?: string;
 }
