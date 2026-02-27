@@ -42,6 +42,24 @@ export class PaymentVerifier {
       return { valid: false, txHash, error: "Transaction details not found" };
     }
 
+    // 验证收款地址是否为服务提供方指定的地址，防止攻击者将交易发送到其他地址后用该交易哈希来通过验证。
+    if (tx.to?.toLowerCase() !== expectedTo.toLowerCase()) {
+      return {
+        valid: false,
+        txHash,
+        error: `Invalid recipient: expected ${expectedTo}, got ${tx.to}`,
+      };
+    }
+
+    // 验证支付金额是否满足服务提供方要求的最低金额，确保实际支付金额不低于服务提供方要求的最低金额，防止攻击者用极小金额（如 1 wei）的交易通过验证
+    if (tx.value < expectedMinAmount) {
+      return {
+        valid: false,
+        txHash,
+        error: `Insufficient payment: expected at least ${expectedMinAmount.toString()} wei, got ${tx.value.toString()} wei`,
+      };
+    }
+
     const result: VerifyResult = {
       valid: true,
       txHash,
