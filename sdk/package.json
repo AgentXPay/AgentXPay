@@ -1,6 +1,6 @@
 {
   "name": "@agentxpay/sdk",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "TypeScript SDK for AgentXPay - AI Agent Payment Infrastructure on Monad blockchain. Supports x402 protocol, service discovery, payments, subscriptions, escrow, and agent wallet management.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
